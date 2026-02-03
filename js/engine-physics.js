@@ -178,7 +178,12 @@ class EnginePhysics {
 
         // Load affects peak pressure
         const loadFraction = this.load / this.maxLoad;
-        const peakPressureMultiplier = 2.0 + 1.8 * loadFraction;
+
+        // RPM affects combustion efficiency and pumping losses
+        const rpmNormalized = this.rpm / 2000; // Normalize around 2000 RPM
+        const rpmEfficiency = 1.0 - 0.15 * Math.abs(rpmNormalized - 1); // Best efficiency at 2000 RPM
+
+        const peakPressureMultiplier = (2.0 + 1.8 * loadFraction) * (0.85 + 0.15 * rpmEfficiency);
 
         let P;
 
@@ -190,10 +195,12 @@ class EnginePhysics {
         if (theta >= 0 && theta < 180) {
             // Suction creates vacuum - pressure below atmospheric
             // Deeper vacuum in middle of stroke, closer to Patm at ends
+            // Higher RPM = deeper vacuum (more flow restriction)
             const strokeProgress = theta / 180;
 
             // Pressure drop profile: max vacuum around 60-100° 
-            const vacuumDepth = 0.18 + 0.08 * (this.rpm / 3000);
+            // RPM effect: vacuum depth increases significantly with RPM
+            const vacuumDepth = 0.10 + 0.25 * (this.rpm / 4000);
             const vacuumProfile = Math.sin(Math.PI * strokeProgress);
 
             P = P_atm * (1 - vacuumDepth * vacuumProfile);
@@ -295,10 +302,11 @@ class EnginePhysics {
         else {
             // Exhaust creates back-pressure - pressure above atmospheric
             // Profile similar to suction but inverted and above Patm
+            // Higher RPM = higher exhaust back-pressure
             const strokeProgress = (theta - 540) / 180;
 
-            // Exhaust back-pressure profile
-            const exhaustHeight = 0.12 + 0.05 * (this.rpm / 3000);
+            // Exhaust back-pressure profile - RPM has bigger effect
+            const exhaustHeight = 0.08 + 0.20 * (this.rpm / 4000);
             const exhaustProfile = Math.sin(Math.PI * strokeProgress);
 
             P = P_atm * (1 + exhaustHeight * exhaustProfile);
