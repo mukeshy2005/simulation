@@ -158,6 +158,8 @@ class EnginePhysics {
 
     /**
      * Calculate actual (realistic) pressure with combustion modeling
+     * Produces classic two-loop P-V diagram: power loop + pumping loop
+     * Reference: Standard SI engine indicator diagram
      * @param {number} theta - Crank angle in degrees
      * @returns {number} Pressure in bar
      */
@@ -169,95 +171,137 @@ class EnginePhysics {
         const Vmax = this.totalVolumeCc;
         const Vmin = this.clearanceVolumeCc;
         const P_atm = this.ambientPressure;
-        const gamma = this.gamma;
 
-        // Reduced gamma for actual cycle (heat losses)
-        const gamma_actual = gamma - 0.05;
+        // Polytropic index (less than gamma due to heat transfer)
+        const n_compression = 1.32;
+        const n_expansion = 1.28;
 
-        // Load factor affects peak pressure
-        const loadFactor = 1.5 + 2.5 * (this.load / this.maxLoad);
-
-        // RPM effect on combustion
-        const rpmFactor = 1 - (this.rpm - 1500) / 15000;
+        // Load affects peak pressure
+        const loadFraction = this.load / this.maxLoad;
+        const peakPressureMultiplier = 2.0 + 1.8 * loadFraction;
 
         let P;
 
+        // =====================================================
+        // SUCTION STROKE (0° - 180°): BELOW Patm
+        // Piston moves from TDC to BDC, intake valve open
+        // Creates BOTTOM of pumping loop
+        // =====================================================
         if (theta >= 0 && theta < 180) {
-            // SUCTION STROKE: Slight vacuum due to flow resistance
-            const suctionFactor = 0.85 + 0.1 * Math.sin(Math.PI * theta / 180);
-            P = P_atm * suctionFactor;
+            // Suction creates vacuum - pressure below atmospheric
+            // Deeper vacuum in middle of stroke, closer to Patm at ends
+            const strokeProgress = theta / 180;
+
+            // Pressure drop profile: max vacuum around 60-100° 
+            const vacuumDepth = 0.18 + 0.08 * (this.rpm / 3000);
+            const vacuumProfile = Math.sin(Math.PI * strokeProgress);
+
+            P = P_atm * (1 - vacuumDepth * vacuumProfile);
         }
-        else if (theta >= 180 && theta < (360 - this.ignitionAdvance)) {
-            // COMPRESSION STROKE (before ignition)
-            const V_at_180 = this.getVolume(180);
+        // =====================================================
+        // COMPRESSION STROKE (180° - 360°): Rising pressure
+        // Piston moves from BDC to TDC, both valves closed
+        // Part of the POWER loop
+        // =====================================================
+        else if (theta >= 180 && theta < 360) {
+            const V_BDC = this.getVolume(180); // Volume at BDC
 
-            // Account for heat transfer to walls
-            const heatLossFactor = 0.95;
-            P = P_atm * Math.pow(V_at_180 / V, gamma_actual) * heatLossFactor;
+            // Start from slightly below Patm (end of suction)
+            const P_start = P_atm * 0.95;
+
+            // Polytropic compression: P * V^n = constant
+            P = P_start * Math.pow(V_BDC / V, n_compression);
         }
-        else if (theta >= (360 - this.ignitionAdvance) && theta < (360 + this.combustionDuration)) {
-            // COMBUSTION PHASE: Gradual pressure rise using Wiebe function
-            const theta_ignition = 360 - this.ignitionAdvance;
-            const theta_end = 360 + this.combustionDuration;
+        // =====================================================
+        // COMBUSTION + EARLY EXPANSION (360° - 400°)
+        // Heat addition near TDC, pressure peaks ~10-15° after TDC
+        // Top of POWER loop
+        // =====================================================
+        else if (theta >= 360 && theta < 400) {
+            const V_TDC = this.getVolume(360);
+            const V_BDC = this.getVolume(180);
 
-            // Pressure at ignition
-            const V_at_180 = this.getVolume(180);
-            const V_at_ignition = this.getVolume(theta_ignition);
-            const P_ignition = P_atm * Math.pow(V_at_180 / V_at_ignition, gamma_actual) * 0.95;
+            // Pressure at end of compression
+            const P_compression = P_atm * 0.95 * Math.pow(V_BDC / V_TDC, n_compression);
 
-            // Peak pressure
-            const P_compression = P_atm * Math.pow(this.compressionRatio, gamma_actual);
-            const P_peak = P_compression * loadFactor * rpmFactor;
+            // Peak pressure (combustion)
+            const P_peak = P_compression * peakPressureMultiplier;
 
-            // Pressure rise due to combustion
-            const combustionProgress = (theta - theta_ignition) / (this.combustionDuration + this.ignitionAdvance);
+            // Combustion profile: smooth rise to peak at ~372°, then gradual fall
+            const theta_peak = 372;
 
-            // Wiebe function for mass fraction burned
-            const a = 5;  // Wiebe parameter
-            const m = 2;  // Wiebe exponent
-            const burnFraction = 1 - Math.exp(-a * Math.pow(combustionProgress, m + 1));
-
-            // Volume correction for expansion during combustion
-            const V_ratio = V_at_ignition / V;
-
-            // Combine compression pressure, combustion pressure rise, and volume change
-            P = P_ignition * Math.pow(V_at_ignition / V, gamma_actual * 0.3) +
-                burnFraction * (P_peak - P_ignition);
-
-            // Ensure smooth peak
-            if (theta > 360 && theta < 375) {
-                const peakSmooth = Math.sin(Math.PI * (theta - 360) / 30);
-                P = Math.max(P, P_peak * peakSmooth);
+            if (theta <= theta_peak) {
+                // Rising to peak - smooth S-curve
+                const progress = (theta - 360) / (theta_peak - 360);
+                const smooth = progress * progress * (3 - 2 * progress);
+                P = P_compression + smooth * (P_peak - P_compression);
+            } else {
+                // Past peak - start of expansion
+                const progress = (theta - theta_peak) / (400 - theta_peak);
+                const V_at_peak = this.getVolume(theta_peak);
+                const P_at_400 = P_peak * Math.pow(V_at_peak / this.getVolume(400), n_expansion);
+                const smooth = progress * progress * (3 - 2 * progress);
+                P = P_peak - smooth * (P_peak - P_at_400);
             }
         }
-        else if (theta >= (360 + this.combustionDuration) && theta < 540) {
-            // EXPANSION STROKE: Adiabatic expansion with heat loss
-            const P_compression = P_atm * Math.pow(this.compressionRatio, gamma_actual);
-            const P_peak = P_compression * loadFactor * rpmFactor;
+        // =====================================================
+        // EXPANSION/POWER STROKE (400° - 540°)
+        // Piston moves from near TDC to BDC
+        // Right side of POWER loop (going down)
+        // =====================================================
+        else if (theta >= 400 && theta < 540) {
+            const V_TDC = this.getVolume(360);
+            const V_BDC = this.getVolume(180);
+            const V_at_400 = this.getVolume(400);
+            const V_at_peak = this.getVolume(372);
 
-            const V_at_peak = this.getVolume(360 + 10);  // Peak pressure ~10° after TDC
-            const gamma_expansion = gamma_actual - 0.1;  // More heat loss during expansion
+            // Calculate peak and pressure at 400°
+            const P_compression = P_atm * 0.95 * Math.pow(V_BDC / V_TDC, n_compression);
+            const P_peak = P_compression * peakPressureMultiplier;
+            const P_at_400 = P_peak * Math.pow(V_at_peak / V_at_400, n_expansion);
 
-            P = P_peak * Math.pow(V_at_peak / V, gamma_expansion);
+            // Polytropic expansion from 400°
+            P = P_at_400 * Math.pow(V_at_400 / V, n_expansion);
+
+            // Near end of expansion, blend toward exhaust valve opening
+            if (theta > 500) {
+                const blend = (theta - 500) / 40;
+                const P_evo = P_atm * 1.5; // Pressure when exhaust valve opens
+                P = P * (1 - blend * 0.3) + P_evo * blend * 0.3;
+            }
         }
-        else if (theta >= 540 && theta < 560) {
-            // EXHAUST VALVE OPENING: Rapid pressure drop (blowdown)
-            const V_at_540 = this.getVolume(540);
-            const P_compression = P_atm * Math.pow(this.compressionRatio, gamma_actual);
-            const P_peak = P_compression * loadFactor * rpmFactor;
-            const V_at_peak = this.getVolume(370);
+        // =====================================================
+        // EXHAUST BLOWDOWN (540° - 600°)
+        // Exhaust valve opens, rapid pressure drop
+        // Transition from power loop to pumping loop
+        // =====================================================
+        else if (theta >= 540 && theta < 600) {
+            // Rapid but smooth drop to exhaust pressure
+            const progress = (theta - 540) / 60;
+            const smoothDrop = 1 - Math.pow(1 - progress, 2.5);
 
-            const P_before_evo = P_peak * Math.pow(V_at_peak / V_at_540, gamma_actual - 0.1);
+            // Pressure before exhaust valve opens (end of expansion)
+            const P_before = P_atm * 2.0;
+            // Exhaust back-pressure (above Patm)
+            const P_exhaust = P_atm * 1.15;
 
-            const blowdownProgress = (theta - 540) / 20;
-            const P_exhaust = P_atm * 1.1;
-
-            P = P_before_evo - blowdownProgress * (P_before_evo - P_exhaust);
+            P = P_before - smoothDrop * (P_before - P_exhaust);
         }
+        // =====================================================
+        // EXHAUST STROKE (600° - 720°): ABOVE Patm
+        // Piston moves from BDC to TDC, exhaust valve open
+        // Creates TOP of pumping loop
+        // =====================================================
         else {
-            // EXHAUST STROKE: Slight positive pressure
-            const exhaustFactor = 1.1 - 0.05 * Math.sin(Math.PI * (theta - 540) / 180);
-            P = P_atm * exhaustFactor;
+            // Exhaust creates back-pressure - pressure above atmospheric
+            // Profile similar to suction but inverted and above Patm
+            const strokeProgress = (theta - 540) / 180;
+
+            // Exhaust back-pressure profile
+            const exhaustHeight = 0.12 + 0.05 * (this.rpm / 3000);
+            const exhaustProfile = Math.sin(Math.PI * strokeProgress);
+
+            P = P_atm * (1 + exhaustHeight * exhaustProfile);
         }
 
         // Ensure pressure doesn't go negative
