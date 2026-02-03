@@ -12,15 +12,17 @@
     --text-medium: #475569;
     --text-light: #64748b;
     --border-color: #e2e8f0;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
 }
 
 /* Reset & Base */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -38,18 +40,18 @@ body {
 .header {
     background: linear-gradient(135deg, var(--primary-blue) 0%, #2563eb 100%);
     color: white;
-    padding: 20px 30px;
+    padding: 12px 24px;
     box-shadow: var(--shadow-md);
 }
 
 .header h1 {
-    font-size: 1.75rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .header p {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     opacity: 0.9;
     max-width: 800px;
 }
@@ -57,12 +59,13 @@ body {
 /* Main Layout */
 .main-container {
     display: grid;
-    grid-template-columns: 280px 1fr 280px;
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: 260px 1fr 260px;
+    gap: 16px;
+    padding: 16px;
     max-width: 1600px;
     margin: 0 auto;
-    min-height: calc(100vh - 100px);
+    height: calc(100vh - 70px);
+    overflow: hidden;
 }
 
 /* Sidebar Panels */
@@ -70,24 +73,26 @@ body {
     background: var(--bg-white);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
-    padding: 20px;
+    padding: 14px;
     height: fit-content;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
 }
 
 .panel-title {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-light);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 16px;
-    padding-bottom: 10px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
     border-bottom: 2px solid var(--bg-gray);
 }
 
 /* Form Controls */
 .control-group {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
 }
 
 .control-group:last-child {
@@ -265,24 +270,27 @@ input[type="number"]:focus {
     background: var(--bg-white);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
-    padding: 20px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
+    height: calc(100vh - 100px);
+    overflow: hidden;
 }
 
 .tabs {
     display: flex;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
 }
 
 .tab-btn {
     flex: 1;
-    padding: 12px 20px;
+    padding: 10px 16px;
     background: var(--bg-gray);
     border: none;
     border-radius: var(--radius-sm);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-medium);
     cursor: pointer;
@@ -301,49 +309,50 @@ input[type="number"]:focus {
 
 .chart-container {
     flex: 1;
-    min-height: 450px;
+    min-height: 0;
     position: relative;
 }
 
 .chart-container canvas {
     max-width: 100%;
+    max-height: 100%;
 }
 
 /* Right Sidebar - Animation & State */
 .animation-container {
     background: var(--bg-gray);
     border-radius: var(--radius-md);
-    padding: 10px;
-    margin-bottom: 16px;
+    padding: 8px;
+    margin-bottom: 12px;
 }
 
 #engineCanvas {
     width: 100%;
-    height: 280px;
+    height: 200px;
     display: block;
 }
 
 .state-grid {
     display: grid;
-    gap: 10px;
+    gap: 6px;
 }
 
 .state-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 12px;
+    padding: 6px 10px;
     background: var(--bg-gray);
     border-radius: var(--radius-sm);
 }
 
 .state-label {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: var(--text-light);
 }
 
 .state-value {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-dark);
 }
@@ -360,27 +369,27 @@ input[type="number"]:focus {
 .metrics-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 16px;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .metric-card {
     background: linear-gradient(135deg, var(--bg-gray) 0%, var(--bg-light) 100%);
-    padding: 12px;
+    padding: 8px;
     border-radius: var(--radius-sm);
     text-align: center;
 }
 
 .metric-label {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     color: var(--text-light);
     text-transform: uppercase;
     letter-spacing: 0.3px;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .metric-value {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--primary-blue);
 }
@@ -389,7 +398,7 @@ input[type="number"]:focus {
 .section-divider {
     height: 1px;
     background: var(--border-color);
-    margin: 16px 0;
+    margin: 10px 0;
 }
 
 /* Scrollbar */
@@ -417,11 +426,11 @@ input[type="number"]:focus {
     .main-container {
         grid-template-columns: 1fr;
     }
-    
+
     .panel {
         max-width: 100%;
     }
-    
+
     .chart-container {
         min-height: 350px;
     }
@@ -431,30 +440,58 @@ input[type="number"]:focus {
     .header {
         padding: 16px 20px;
     }
-    
+
     .header h1 {
         font-size: 1.3rem;
     }
-    
+
     .main-container {
         padding: 15px;
         gap: 15px;
     }
-    
+
     .panel {
         padding: 16px;
     }
 }
 
 /* Load Color Indicators */
-.load-color-1 { border-left: 3px solid #374151; }
-.load-color-2 { border-left: 3px solid #ec4899; }
-.load-color-3 { border-left: 3px solid #10b981; }
-.load-color-4 { border-left: 3px solid #f59e0b; }
-.load-color-5 { border-left: 3px solid #ef4444; }
+.load-color-1 {
+    border-left: 3px solid #374151;
+}
 
-.checkbox-item.load-color-1 { padding-left: 8px; }
-.checkbox-item.load-color-2 { padding-left: 8px; }
-.checkbox-item.load-color-3 { padding-left: 8px; }
-.checkbox-item.load-color-4 { padding-left: 8px; }
-.checkbox-item.load-color-5 { padding-left: 8px; }
+.load-color-2 {
+    border-left: 3px solid #ec4899;
+}
+
+.load-color-3 {
+    border-left: 3px solid #10b981;
+}
+
+.load-color-4 {
+    border-left: 3px solid #f59e0b;
+}
+
+.load-color-5 {
+    border-left: 3px solid #ef4444;
+}
+
+.checkbox-item.load-color-1 {
+    padding-left: 8px;
+}
+
+.checkbox-item.load-color-2 {
+    padding-left: 8px;
+}
+
+.checkbox-item.load-color-3 {
+    padding-left: 8px;
+}
+
+.checkbox-item.load-color-4 {
+    padding-left: 8px;
+}
+
+.checkbox-item.load-color-5 {
+    padding-left: 8px;
+}

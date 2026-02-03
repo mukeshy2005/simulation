@@ -24,14 +24,14 @@ class EngineAnimation {
         this.width = this.canvas.width;
         this.height = this.canvas.height;
         this.centerX = this.width / 2;
-        this.centerY = this.height * 0.7;
+        this.centerY = this.height * 0.75;
 
-        this.bore = this.engine.bore * 0.6;
-        this.stroke = this.engine.stroke * 0.5;
+        this.bore = this.engine.bore * 0.4;
+        this.stroke = this.engine.stroke * 0.32;
         this.crankRadius = this.stroke / 2;
-        this.pistonHeight = 25;
+        this.pistonHeight = 18;
         this.pistonWidth = this.bore - 4;
-        this.cylinderTop = this.centerY - this.stroke - this.pistonHeight - 40;
+        this.cylinderTop = this.centerY - this.stroke - this.pistonHeight - 25;
     }
 
     start() {
@@ -104,7 +104,7 @@ class EngineAnimation {
 
         ctx.fillStyle = '#94a3b8';
         ctx.strokeStyle = '#475569';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 2;
 
         ctx.fillRect(x - 10, y, 10, h);
         ctx.strokeRect(x - 10, y, 10, h);
@@ -115,7 +115,7 @@ class EngineAnimation {
         // Head
         ctx.fillStyle = '#475569';
         ctx.beginPath();
-        ctx.roundRect(x - 10, this.cylinderTop, this.bore + 20, 20, 4);
+        ctx.roundRect(x - 8, this.cylinderTop, this.bore + 16, 15, 3);
         ctx.fill();
     }
 
@@ -132,10 +132,10 @@ class EngineAnimation {
         ctx.fill();
         ctx.stroke();
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
             ctx.beginPath();
-            ctx.moveTo(x, y + 5 + i * 6);
-            ctx.lineTo(x + this.pistonWidth, y + 5 + i * 6);
+            ctx.moveTo(x, y + 4 + i * 5);
+            ctx.lineTo(x + this.pistonWidth, y + 4 + i * 5);
             ctx.stroke();
         }
     }
@@ -157,8 +157,8 @@ class EngineAnimation {
 
         ctx.fillStyle = '#1e293b';
         ctx.beginPath();
-        ctx.arc(this.centerX, pinY, 6, 0, Math.PI * 2);
-        ctx.arc(crankX, crankY, 6, 0, Math.PI * 2);
+        ctx.arc(this.centerX, pinY, 4, 0, Math.PI * 2);
+        ctx.arc(crankX, crankY, 4, 0, Math.PI * 2);
         ctx.fill();
     }
 
@@ -178,12 +178,12 @@ class EngineAnimation {
 
         ctx.fillStyle = '#1e293b';
         ctx.beginPath();
-        ctx.arc(this.centerX, this.centerY, 12, 0, Math.PI * 2);
+        ctx.arc(this.centerX, this.centerY, 8, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.fillStyle = '#f97316';
         ctx.beginPath();
-        ctx.arc(crankX, crankY, 8, 0, Math.PI * 2);
+        ctx.arc(crankX, crankY, 5, 0, Math.PI * 2);
         ctx.fill();
     }
 
@@ -195,19 +195,19 @@ class EngineAnimation {
         // Intake
         ctx.fillStyle = states.intake ? '#22c55e' : '#94a3b8';
         ctx.beginPath();
-        ctx.arc(this.centerX - 20, valveY, 8, 0, Math.PI * 2);
+        ctx.arc(this.centerX - 15, valveY, 6, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = '#1e293b';
-        ctx.font = '10px sans-serif';
+        ctx.font = '8px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('IN', this.centerX - 20, valveY - 15);
+        ctx.fillText('IN', this.centerX - 15, valveY - 10);
 
         // Exhaust
         ctx.fillStyle = states.exhaust ? '#ef4444' : '#94a3b8';
         ctx.beginPath();
-        ctx.arc(this.centerX + 20, valveY, 8, 0, Math.PI * 2);
+        ctx.arc(this.centerX + 15, valveY, 6, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillText('EX', this.centerX + 20, valveY - 15);
+        ctx.fillText('EX', this.centerX + 15, valveY - 10);
     }
 
     drawSparkPlug() {
@@ -235,13 +235,13 @@ class EngineAnimation {
         const colors = { Suction: '#3b82f6', Compression: '#8b5cf6', Power: '#ef4444', Exhaust: '#6b7280' };
 
         ctx.fillStyle = colors[phase] || '#1e293b';
-        ctx.font = 'bold 14px sans-serif';
+        ctx.font = 'bold 11px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(phase.toUpperCase(), this.centerX, 25);
+        ctx.fillText(phase.toUpperCase(), this.centerX, 18);
 
         ctx.fillStyle = '#64748b';
-        ctx.font = '12px sans-serif';
-        ctx.fillText('θ = ' + this.currentAngle.toFixed(0) + '°', this.centerX, 42);
+        ctx.font = '10px sans-serif';
+        ctx.fillText('θ = ' + this.currentAngle.toFixed(0) + '°', this.centerX, 32);
     }
 
     updateEngine(engine) {

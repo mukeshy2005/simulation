@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PV Diagram Simulation - Four Stroke SI Engine</title>
-    <meta name="description" content="Interactive simulation for SI Engine P-V and P-θ diagrams for B.Tech Mechanical Engineering automobile lab">
-    
+    <meta name="description"
+        content="Interactive simulation for SI Engine P-V and P-θ diagrams for B.Tech Mechanical Engineering automobile lab">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    
+
     <!-- Styles -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -30,7 +33,7 @@
         <aside class="panel control-panel">
             <!-- Engine Parameters -->
             <h3 class="panel-title">Engine Parameters</h3>
-            
+
             <div class="control-group">
                 <div class="control-label">
                     <span>Bore (B)</span>
@@ -38,7 +41,7 @@
                 </div>
                 <input type="range" id="bore" min="50" max="150" value="80" step="1">
             </div>
-            
+
             <div class="control-group">
                 <div class="control-label">
                     <span>Stroke (S)</span>
@@ -46,7 +49,7 @@
                 </div>
                 <input type="range" id="stroke" min="50" max="200" value="110" step="1">
             </div>
-            
+
             <div class="control-group">
                 <div class="control-label">
                     <span>Con Rod Length (L)</span>
@@ -54,7 +57,7 @@
                 </div>
                 <input type="range" id="conRodLength" min="150" max="300" value="220" step="5">
             </div>
-            
+
             <div class="control-group">
                 <div class="control-label">
                     <span>Compression Ratio (r)</span>
@@ -62,12 +65,12 @@
                 </div>
                 <input type="range" id="compressionRatio" min="6" max="12" value="8" step="0.5">
             </div>
-            
+
             <div class="section-divider"></div>
-            
+
             <!-- Operating Parameters -->
             <h3 class="panel-title">Operating Parameters</h3>
-            
+
             <div class="control-group">
                 <div class="control-label">
                     <span>Engine RPM</span>
@@ -75,7 +78,7 @@
                 </div>
                 <input type="range" id="rpm" min="500" max="4000" value="1857" step="50">
             </div>
-            
+
             <div class="control-group">
                 <div class="control-label">
                     <span>Load (Torque)</span>
@@ -83,22 +86,22 @@
                 </div>
                 <input type="range" id="load" min="0" max="20" value="11.1" step="0.1">
             </div>
-            
+
             <div class="control-group">
                 <div class="control-label">Ambient Temperature (K)</div>
                 <input type="number" id="ambientTemp" value="298" min="273" max="323" step="1">
             </div>
-            
+
             <div class="control-group">
                 <div class="control-label">Ambient Pressure (bar)</div>
                 <input type="number" id="ambientPressure" value="1.013" min="0.9" max="1.1" step="0.001">
             </div>
-            
+
             <div class="section-divider"></div>
-            
+
             <!-- Display Options -->
             <h3 class="panel-title">Display Options</h3>
-            
+
             <div class="control-group">
                 <div class="control-label">Show Multiple Loads</div>
                 <div class="checkbox-group">
@@ -124,7 +127,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="control-group">
                 <div class="control-label">Cycle Type</div>
                 <div class="radio-group">
@@ -138,7 +141,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Action Buttons -->
             <div class="btn-group">
                 <button id="generateBtn" class="btn btn-primary">📊 Generate Diagram</button>
@@ -155,7 +158,7 @@
                 <button id="pvTab" class="tab-btn active">P-V Diagram</button>
                 <button id="pthetaTab" class="tab-btn">P-θ Diagram</button>
             </div>
-            
+
             <!-- Charts -->
             <div id="pvChartContainer" class="chart-container">
                 <canvas id="pvChart"></canvas>
@@ -168,15 +171,15 @@
         <!-- Right Sidebar - Animation & State -->
         <aside class="panel">
             <h3 class="panel-title">Engine Animation</h3>
-            
+
             <div class="animation-container">
-                <canvas id="engineCanvas" width="260" height="280"></canvas>
+                <canvas id="engineCanvas" width="260" height="200"></canvas>
             </div>
-            
+
             <div class="control-group">
                 <button id="animationBtn" class="btn btn-animation">▶ Start Animation</button>
             </div>
-            
+
             <div class="control-group">
                 <div class="control-label">
                     <span>Animation Speed</span>
@@ -184,11 +187,11 @@
                 </div>
                 <input type="range" id="animationSpeed" min="0.1" max="5" value="1" step="0.1">
             </div>
-            
+
             <div class="section-divider"></div>
-            
+
             <h3 class="panel-title">Current State</h3>
-            
+
             <div class="state-grid">
                 <div class="state-item">
                     <span class="state-label">Crank Angle</span>
@@ -219,11 +222,11 @@
                     <span class="state-value" id="stateExhaust">CLOSED</span>
                 </div>
             </div>
-            
+
             <div class="section-divider"></div>
-            
+
             <h3 class="panel-title">Performance Metrics</h3>
-            
+
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-label">Displacement</div>
@@ -260,4 +263,5 @@
     <script src="js/ui-controls.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>
