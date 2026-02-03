@@ -1,0 +1,746 @@
+Here's a comprehensive, detailed prompt for creating your SI Engine PV Diagram simulation:
+
+---
+
+# **COMPLETE SIMULATION PROMPT FOR SI ENGINE PV DIAGRAM**
+
+## **PROJECT OVERVIEW**
+Create an interactive web-based simulation for a four-stroke single-cylinder SI (Spark Ignition) engine that generates Pressure-Volume (P-V) and Pressure-Crank Angle (P-θ) diagrams. This is for a B.Tech Mechanical Engineering automobile engineering lab experiment.
+
+---
+
+## **1. VISUAL LAYOUT & USER INTERFACE**
+
+### **Overall Layout Structure:**
+- **Top Section (20% height):** Title banner with experiment name
+  - Title: "PV Diagram Simulation - Four Stroke SI Engine"
+  - Subtitle: "Objective: To measure and plot the pressure vs volume diagram as a function of crank position"
+  - Clean, professional font (sans-serif)
+  - Background: Gradient (dark blue to light blue) or solid engineering blue (#1e3a8a)
+
+- **Left Sidebar (25% width):** Parameter Control Panel
+  - White or light gray background (#f3f4f6)
+  - Rounded corners for modern look
+  - Clear section headers
+  - All interactive controls here
+
+- **Main Center Area (50% width):** Graph Display Area
+  - Two tabs or toggle buttons to switch between:
+    - **Tab 1:** P-V Diagram (Pressure vs Volume)
+    - **Tab 2:** P-θ Diagram (Pressure vs Crank Angle)
+  - Large, clear graphs with grid lines
+  - Professional axis labels with units
+  - Legend showing different loads/conditions
+
+- **Right Sidebar (25% width):** Engine Animation & Information
+  - Simple 2D schematic of engine showing:
+    - Cylinder with piston
+    - Crank mechanism
+    - Piston position indicator
+    - Valves (intake/exhaust) with open/closed status
+  - Real-time display of current values:
+    - Current crank angle
+    - Current volume
+    - Current pressure
+    - Current stroke phase (Suction/Compression/Power/Exhaust)
+
+### **Color Scheme:**
+- **Background:** White or very light gray (#fafafa)
+- **Control Panel:** Light gray (#f3f4f6) with white input boxes
+- **Graphs:** White background with light gray grid
+- **Load Curves:** Use distinct colors matching your reference:
+  - Load 1: Dark gray/black
+  - Load 2: Pink/magenta (#ec4899)
+  - Load 3: Green (#10b981)
+  - Load 4: Brown/tan (#92400e)
+  - Load 5: Red/coral (#ef4444)
+
+---
+
+## **2. PARAMETER CONTROL PANEL (LEFT SIDEBAR)**
+
+### **Section 1: Engine Specifications**
+**Header:** "Engine Parameters"
+
+**Input Fields:**
+1. **Bore (B)** 
+   - Input type: Number slider + text input box
+   - Range: 50 mm to 150 mm
+   - Default: 80 mm
+   - Step: 1 mm
+   - Unit display: "mm"
+
+2. **Stroke (S)**
+   - Input type: Number slider + text input box
+   - Range: 50 mm to 200 mm
+   - Default: 110 mm
+   - Step: 1 mm
+   - Unit display: "mm"
+
+3. **Connecting Rod Length (L)**
+   - Input type: Number slider + text input box
+   - Range: 150 mm to 300 mm
+   - Default: 220 mm
+   - Step: 5 mm
+   - Unit display: "mm"
+
+4. **Compression Ratio (r)**
+   - Input type: Number slider + text input box
+   - Range: 6:1 to 12:1
+   - Default: 8:1
+   - Step: 0.5
+   - Unit display: ":1"
+
+### **Section 2: Operating Conditions**
+**Header:** "Operating Parameters"
+
+**Input Fields:**
+1. **Engine RPM**
+   - Input type: Number slider + text input box
+   - Range: 500 to 4000 RPM
+   - Default: 1857 RPM (matching your image)
+   - Step: 50 RPM
+   - Unit display: "rpm"
+
+2. **Load (Torque)**
+   - Input type: Number slider + text input box
+   - Range: 0 Nm to 20 Nm
+   - Default: 11.1 Nm (matching your image)
+   - Step: 0.1 Nm
+   - Unit display: "Nm"
+   - OR: Multiple checkboxes to show Load1, Load2, Load3, Load4, Load5 simultaneously
+
+3. **Ambient Temperature**
+   - Input type: Number input box
+   - Range: 273 K to 323 K
+   - Default: 298 K (25°C)
+   - Step: 1 K
+   - Unit display: "K"
+
+4. **Ambient Pressure**
+   - Input type: Number input box
+   - Range: 0.9 bar to 1.1 bar
+   - Default: 1.013 bar
+   - Step: 0.001 bar
+   - Unit display: "bar"
+
+### **Section 3: Display Options**
+**Header:** "Display Settings"
+
+**Checkboxes/Options:**
+1. **Show Multiple Loads**
+   - Checkbox: Load 1, Load 2, Load 3, Load 4, Load 5
+   - Allow multiple selections to overlay curves
+
+2. **Show Theoretical vs Actual**
+   - Radio buttons: "Theoretical Cycle" / "Actual Cycle" / "Both"
+
+3. **Show Grid**
+   - Toggle: On/Off
+
+4. **Show Animation**
+   - Toggle: On/Off (for piston movement)
+
+5. **Animation Speed**
+   - Slider: 0.1x to 5x
+   - Default: 1x
+
+### **Section 4: Action Buttons**
+**Buttons with clear styling:**
+1. **"Generate Diagram"** - Large, primary button (blue, #2563eb)
+2. **"Reset to Default"** - Secondary button (gray)
+3. **"Export Data (CSV)"** - Secondary button
+4. **"Save Graph (PNG)"** - Secondary button
+5. **"Start/Stop Animation"** - Toggle button (green when running)
+
+---
+
+## **3. GRAPH DISPLAY AREA (CENTER)**
+
+### **Tab 1: P-V Diagram**
+
+**Graph Properties:**
+- **X-axis:** Volume (Cu.Cm³ or liters)
+  - Range: 0 to Vmax (calculated from engine geometry)
+  - Label: "Volume (Cu.Cm³)"
+  - Grid: Major and minor gridlines
+
+- **Y-axis:** Pressure (Bar)
+  - Range: 0 to 30 bar (auto-adjust based on peak pressure)
+  - Label: "Pressure (Bar)"
+  - Grid: Major and minor gridlines
+
+**What to Plot:**
+1. **Theoretical Otto Cycle** (if "Theoretical" selected):
+   - Process 1-2: Horizontal line (constant pressure suction)
+   - Process 2-3: Adiabatic compression curve (PV^γ = constant)
+   - Process 3-4: Vertical line (constant volume heat addition)
+   - Process 4-5: Adiabatic expansion curve
+   - Process 5-2: Vertical line (constant volume heat rejection)
+   - Process 2-1: Horizontal line (constant pressure exhaust)
+
+2. **Actual Cycle** (if "Actual" selected):
+   - Smooth curves with rounded corners (not sharp transitions)
+   - Suction slightly below atmospheric pressure
+   - Exhaust slightly above atmospheric pressure
+   - Small pumping loop (1-2-1)
+   - Ignition advance (spark before TDC)
+   - Realistic pressure rise during combustion
+
+3. **Multiple Load Curves** (if multiple loads checked):
+   - Overlay different colored curves
+   - Each curve labeled in legend
+   - Different peak pressures based on load
+
+**Graph Features:**
+- **Legend:** Top-right or top-left corner showing:
+  - Load values and colors
+  - Line styles if comparing theoretical vs actual
+- **Tooltips:** Hover over curve to show exact P and V values
+- **Markers:** Key points labeled (TDC, BDC, ignition point, exhaust valve opening)
+
+### **Tab 2: P-θ Diagram**
+
+**Graph Properties:**
+- **X-axis:** Crank Angle (degrees)
+  - Range: 0° to 720° (complete four-stroke cycle)
+  - Label: "Crank Angle (degrees)"
+  - Markers: 0°(TDC), 180°(BDC), 360°(TDC), 540°(BDC), 720°(TDC)
+  - Grid: Every 60° or 90°
+
+- **Y-axis:** Pressure (Bar)
+  - Range: 0 to peak pressure + 5 bar
+  - Label: "Pressure (Bar)"
+  - Grid: Major and minor gridlines
+
+**What to Plot:**
+1. **Four Stroke Phases** (visually distinguished):
+   - **0-180°:** Suction stroke (low pressure ~0.8-1.0 bar)
+   - **180-360°:** Compression stroke (pressure rising)
+   - **360-540°:** Power stroke (peak pressure then decreasing)
+   - **540-720°:** Exhaust stroke (slightly elevated pressure ~1.1 bar)
+
+2. **Multiple RPM/Load Curves:**
+   - Different colored curves for different conditions
+   - Show how peak pressure location shifts with RPM
+   - Show how peak pressure magnitude changes with load
+
+**Graph Features:**
+- **Vertical markers:** Dotted lines at TDC (0°, 360°, 720°) and BDC (180°, 540°)
+- **Shaded regions:** Optional background shading for each stroke phase
+- **Legend:** Showing different operating conditions
+- **Tooltips:** Hover to see pressure at specific crank angle
+
+---
+
+## **4. ENGINE ANIMATION SECTION (RIGHT SIDEBAR)**
+
+### **2D Engine Schematic Components:**
+
+1. **Cylinder Block:**
+   - Rectangular outline representing cylinder
+   - Fixed position
+   - Light gray color (#d1d5db)
+
+2. **Piston:**
+   - Rectangular shape inside cylinder
+   - Moves up and down based on crank angle
+   - Darker gray (#6b7280)
+   - Shows piston rings (horizontal lines)
+
+3. **Connecting Rod:**
+   - Line connecting piston to crankshaft
+   - Changes angle as engine rotates
+   - Medium thickness, dark color
+
+4. **Crankshaft:**
+   - Circle representing crankpin
+   - Rotates around main bearing
+   - Shows crank throw
+   - Red or orange color for visibility
+
+5. **Cylinder Head:**
+   - Top portion showing:
+   - **Intake Valve:** Circle with color coding:
+     - Green when OPEN (0-180° crank angle)
+     - Gray when CLOSED
+   - **Exhaust Valve:** Circle with color coding:
+     - Red when OPEN (540-720° crank angle)
+     - Gray when CLOSED
+   - **Spark Plug:** Small icon at center, shows "spark" animation during ignition (around 350-370°)
+
+6. **Volume Indicator:**
+   - Visual representation of clearance volume (Vc) vs total volume (V)
+   - Could be shown as shaded area above piston
+   - Color changes with stroke phase
+
+### **Animation Behavior:**
+- **When "Start Animation" clicked:**
+  - Crank rotates continuously at speed determined by slider
+  - Piston moves up/down following crank motion
+  - Valves open/close at appropriate times
+  - Spark plug "fires" during power stroke
+  - Current crank angle indicator (arrow or marker)
+
+- **Synchronized with Graph:**
+  - A vertical line or marker on the graph moves along X-axis
+  - Shows current position on P-V or P-θ curve
+  - Real-time pressure and volume values update
+
+### **Information Display Box:**
+**Header:** "Current State"
+
+**Real-time Values (update during animation):**
+```
+Crank Angle: XXX.X°
+Stroke Phase: [Suction/Compression/Power/Exhaust]
+Piston Position: X.X cm from TDC
+Volume: XXX.X Cu.Cm³
+Pressure: XX.X bar
+Temperature: XXX K
+Intake Valve: [OPEN/CLOSED]
+Exhaust Valve: [OPEN/CLOSED]
+```
+
+---
+
+## **5. PHYSICS & CALCULATIONS**
+
+### **Volume Calculation (V as function of θ):**
+
+**Formula:**
+```
+V(θ) = Vc + (π×B²×S/4) × [1 + (L/a) - cos(θ) - √((L/a)² - sin²(θ))]
+```
+
+Where:
+- Vc = Clearance volume = Vmax/(r-1)
+- B = Bore
+- S = Stroke
+- L = Connecting rod length
+- a = Crank radius = S/2
+- θ = Crank angle (radians)
+- r = Compression ratio
+- Vmax = Vc + Vd (Vd = displacement volume = π×B²×S/4)
+
+**Calculate for θ = 0° to 720° in steps of 1° or 2°**
+
+### **Pressure Calculation:**
+
+#### **For Theoretical Cycle:**
+
+1. **Suction (0-180°):**
+   - P = P_ambient = 1.013 bar
+
+2. **Compression (180-360°):**
+   - P₂ = P_ambient (at start of compression, θ=180°)
+   - V₂ = Vmax
+   - For any angle θ: P(θ) = P₂ × (V₂/V(θ))^γ
+   - γ = 1.4 for air
+   - At θ=360° (TDC): P₃ = P₂ × r^γ
+
+3. **Combustion (at θ=360°, constant volume):**
+   - Heat addition: Q_in (depends on load/fuel)
+   - P₄ = P₃ × (1 + Q_in/(Cv×m×T₃))
+   - Or simplified: P₄ = P₃ × pressure_ratio
+   - pressure_ratio depends on load: higher load → higher ratio
+
+4. **Expansion (360-540°):**
+   - P₄ = pressure after combustion
+   - V₄ = Vc
+   - P(θ) = P₄ × (V₄/V(θ))^γ
+
+5. **Exhaust Blowdown (at θ=540°):**
+   - P drops from P₅ to ~P_ambient
+
+6. **Exhaust (540-720°):**
+   - P = P_ambient
+
+#### **For Actual Cycle (more realistic):**
+
+1. **Suction (0-180°):**
+   - P = 0.85 × P_ambient (slight vacuum due to flow resistance)
+
+2. **Compression (180° to ~350°):**
+   - Similar to theoretical but:
+   - Account for heat transfer to walls (slightly lower pressure)
+   - P(θ) = P₂ × (V₂/V(θ))^(γ-0.05) × heat_transfer_factor
+
+3. **Ignition (around θ = 350-370°):**
+   - Spark occurs before TDC (ignition advance)
+   - Pressure rise not instantaneous
+   - Use Wiebe function or sigmoid curve for realistic combustion:
+   ```
+   burn_fraction(θ) = 1 - exp(-a×((θ-θ_ignition)/Δθ_burn)^(m+1))
+   ```
+   - θ_ignition ≈ 350° (10-20° before TDC)
+   - Δθ_burn ≈ 40-60° (combustion duration)
+
+4. **Expansion (peak pressure ~370° to 540°):**
+   - Adiabatic expansion with heat loss
+   - P(θ) = P_peak × (V_peak/V(θ))^(γ-0.1)
+
+5. **Exhaust Valve Opening (~540°):**
+   - Pressure drops rapidly but not instantly
+   - Use exponential decay over 10-20°
+
+6. **Exhaust (540-720°):**
+   - P = 1.1-1.15 × P_ambient (flow resistance)
+
+### **Load Effect on Pressure:**
+
+**Peak pressure varies with load:**
+```
+P_peak = P_compression × (1 + load_factor × Load/Load_max)
+```
+
+Where:
+- load_factor = 2.0 to 3.0
+- Load_max = maximum load capability (e.g., 20 Nm)
+
+**Example for 5 loads:**
+- Load 1 (2 Nm): P_peak ≈ 8-10 bar
+- Load 2 (5 Nm): P_peak ≈ 12-15 bar
+- Load 3 (8 Nm): P_peak ≈ 16-20 bar
+- Load 4 (11 Nm): P_peak ≈ 20-24 bar
+- Load 5 (15 Nm): P_peak ≈ 24-28 bar
+
+### **RPM Effect:**
+
+**Higher RPM causes:**
+1. Slightly lower peak pressure (less time for complete combustion)
+2. Peak pressure occurs slightly later in crank angle
+3. Faster pressure changes
+
+**Adjustment:**
+```
+θ_peak_pressure = 370° + (RPM - 1500)/1000 × 5°
+P_peak_actual = P_peak_theoretical × (1 - (RPM - 1500)/10000)
+```
+
+---
+
+## **6. INTERACTIVITY & USER EXPERIENCE**
+
+### **Responsive Controls:**
+1. **Sliders:**
+   - Smooth dragging
+   - Show current value while dragging
+   - Update graph in real-time OR after releasing (toggle option)
+
+2. **Number Inputs:**
+   - Validate ranges (show error if out of bounds)
+   - Auto-update when Enter is pressed
+
+3. **Checkboxes for Multiple Loads:**
+   - Allow selecting 1 to 5 loads simultaneously
+   - Each load uses different color and line style
+   - Update legend automatically
+
+### **Animation Controls:**
+1. **Play/Pause Button:**
+   - Green when playing, gray when paused
+   - Icon: ▶️ / ⏸️
+
+2. **Speed Slider:**
+   - 0.1x to 5x real-time
+   - Default: 1x
+   - Shows "Slow Motion" or "Fast Forward" label
+
+3. **Step Through:**
+   - Additional buttons: "Previous Cycle" | "Next Cycle"
+   - Or: Drag a slider to manually set crank angle
+
+### **Graph Interactivity:**
+1. **Zoom:**
+   - Mouse wheel or pinch gesture
+   - Zoom in on specific region of graph
+
+2. **Pan:**
+   - Click and drag to move view
+
+3. **Hover Tooltips:**
+   - Show exact values at cursor position
+   - Format: "P = 15.3 bar, V = 245.7 cm³"
+
+4. **Click to Mark:**
+   - Click on graph to place marker
+   - Show details of that point in info box
+
+### **Data Export:**
+1. **CSV Export:**
+   - Headers: Crank_Angle, Volume, Pressure, Phase
+   - All data points (0-720° at chosen resolution)
+   - Include metadata (bore, stroke, RPM, load, etc.)
+
+2. **Graph Image Export:**
+   - High resolution PNG (1920x1080 or higher)
+   - Include title, legend, axis labels
+   - Filename: "PV_Diagram_[parameters]_[date].png"
+
+---
+
+## **7. ADDITIONAL FEATURES (NICE TO HAVE)**
+
+### **Theory Section:**
+**Collapsible panel or separate tab:**
+- Explanation of Otto cycle
+- Definitions: TDC, BDC, compression ratio, displacement volume
+- Formulas used in simulation
+- Description of four strokes
+
+### **Comparison Mode:**
+**Split screen showing:**
+- Left: Theoretical cycle
+- Right: Actual cycle
+- Side-by-side P-V diagrams for comparison
+
+### **Performance Metrics Display:**
+**Calculated and displayed:**
+1. **Indicated Power (IP):**
+   ```
+   IP = (Area of P-V diagram × L × N) / (60 × number of strokes)
+   ```
+   - L = stroke length (m)
+   - N = RPM
+   - For 4-stroke: number of strokes = 2
+
+2. **Indicated Mean Effective Pressure (IMEP):**
+   ```
+   IMEP = Area of P-V diagram / Displacement volume
+   ```
+
+3. **Thermal Efficiency:**
+   ```
+   η_thermal = 1 - (1/r^(γ-1))
+   ```
+
+4. **Volumetric Efficiency** (simplified)
+
+5. **Mean Piston Speed:**
+   ```
+   S_mean = 2 × L × N / 60 (m/s)
+   ```
+
+**Display as cards or table below graphs**
+
+### **Educational Mode:**
+**Step-by-step walkthrough:**
+1. Highlight each process (1-2, 2-3, etc.)
+2. Explain what's happening
+3. Show relevant equations
+4. Advance manually or automatically
+
+### **Preset Scenarios:**
+**Dropdown menu with common engine configurations:**
+1. "Small Engine (50cc scooter)" - B=40mm, S=40mm, r=9:1
+2. "Motorcycle Engine (150cc)" - B=57mm, S=58mm, r=9.5:1
+3. "Car Engine (1000cc, 4-cylinder)" - B=80mm, S=100mm, r=10:1
+4. "High Performance (r=12:1)"
+5. "Custom" - user defined
+
+---
+
+## **8. TECHNICAL IMPLEMENTATION REQUIREMENTS**
+
+### **Technology Stack:**
+**Recommended: HTML + CSS + JavaScript (React.js)**
+
+**Libraries to Use:**
+1. **Plotting:** 
+   - Chart.js OR
+   - Plotly.js OR
+   - D3.js
+   - (Choose one based on complexity preference)
+
+2. **UI Components:**
+   - React with Material-UI OR
+   - Bootstrap for styling
+   - Custom CSS for specific styling needs
+
+3. **Animation:**
+   - HTML5 Canvas OR
+   - SVG with CSS animations OR
+   - React Spring for smooth animations
+
+4. **Math Calculations:**
+   - JavaScript Math library (built-in)
+   - No external math libraries needed for basic calculations
+
+### **Code Structure:**
+
+```
+project/
+├── index.html
+├── styles/
+│   ├── main.css
+│   ├── controls.css
+│   └── animation.css
+├── scripts/
+│   ├── engine-physics.js      // All calculations
+│   ├── graph-generator.js     // P-V and P-θ plotting
+│   ├── animation.js           // Piston/crank animation
+│   ├── ui-controls.js         // Handle inputs
+│   └── main.js               // Initialize and coordinate
+└── assets/
+    └── images/
+```
+
+### **Performance Requirements:**
+1. **Smooth animation:** 30-60 FPS
+2. **Graph update:** < 500ms after parameter change
+3. **Responsive:** Works on desktop (primary) and tablets
+4. **Browser support:** Chrome, Firefox, Safari, Edge (latest versions)
+
+### **Data Resolution:**
+- Calculate pressure and volume at: **1° or 2° crank angle increments**
+- Total data points: 360-720 points per cycle
+- Smooth curves without visible jaggedness
+
+---
+
+## **9. VALIDATION & ACCURACY**
+
+### **Physics Validation:**
+1. **Check that:**
+   - Peak pressure occurs around 370° (10-20° after TDC)
+   - Compression ratio matches: r = Vmax/Vmin
+   - Area of P-V loop increases with load
+   - Peak pressure decreases slightly with higher RPM
+   - Pumping loop (1-2-1) is visible in actual cycle
+
+2. **Reasonable Values:**
+   - Peak pressure: 15-30 bar for typical SI engine
+   - Suction pressure: 0.8-0.95 bar
+   - Exhaust pressure: 1.05-1.2 bar
+   - Compression pressure (before ignition): 8-15 bar
+
+### **Compare with Reference:**
+- Your uploaded image shows Load 5 peak ~24.5 bar at 1857 RPM
+- Simulation should produce similar values for same parameters
+
+---
+
+## **10. USER TESTING SCENARIOS**
+
+### **Test Cases to Verify:**
+
+1. **Change Compression Ratio:**
+   - Increase r from 8 to 11
+   - Expected: Peak pressure increases, efficiency increases
+
+2. **Change Load:**
+   - Increase from 5 Nm to 15 Nm
+   - Expected: Peak pressure increases, P-V loop area increases
+
+3. **Change RPM:**
+   - Increase from 1500 to 3000 RPM
+   - Expected: Slight decrease in peak pressure, timing shift
+
+4. **Multiple Loads Display:**
+   - Select Load1, Load2, Load3 checkboxes
+   - Expected: Three curves overlay with different colors
+
+5. **Animation:**
+   - Start animation
+   - Expected: Piston moves smoothly, valves open/close correctly
+
+6. **Export:**
+   - Export CSV
+   - Expected: File downloads with all data points
+
+---
+
+## **11. FINAL DELIVERABLES**
+
+### **What to Submit to Professor:**
+
+1. **Working Simulation:**
+   - Hosted online (GitHub Pages, Netlify, or Vercel) OR
+   - Downloadable ZIP file that runs locally
+
+2. **Documentation:**
+   - README file explaining:
+     - How to run the simulation
+     - What parameters can be adjusted
+     - Brief theory explanation
+   - User manual (1-2 pages)
+
+3. **Source Code:**
+   - Well-commented code
+   - Clear variable names
+   - Organized file structure
+
+4. **Sample Outputs:**
+   - Screenshots of P-V diagrams
+   - Screenshots of P-θ diagrams
+   - CSV data samples
+
+5. **Report (Optional but Recommended):**
+   - Theory and formulas used
+   - Validation of results
+   - Comparison with theoretical values
+   - Screenshots showing different scenarios
+
+---
+
+## **12. EXAMPLE WORKFLOW FOR USER**
+
+### **Typical User Journey:**
+
+1. **Load Page:**
+   - See default engine configuration displayed
+   - Default graph (P-V diagram) already shown
+
+2. **Explore Defaults:**
+   - Click "Start Animation" to see engine operation
+   - Observe how P-V diagram relates to piston motion
+
+3. **Adjust Parameters:**
+   - Move RPM slider to 2500 rpm
+   - See graph update automatically
+   - Notice peak pressure timing change
+
+4. **Compare Multiple Loads:**
+   - Check Load1, Load3, Load5 checkboxes
+   - See three curves overlay on graph
+   - Understand effect of load on peak pressure
+
+5. **Switch to P-θ View:**
+   - Click "P-θ Diagram" tab
+   - See pressure variation across full 720° cycle
+   - Identify four stroke phases clearly
+
+6. **Export Results:**
+   - Click "Save Graph" to download PNG
+   - Click "Export Data" to get CSV for Excel analysis
+
+7. **Reset and Try New Configuration:**
+   - Click "Reset to Default"
+   - Or select "High Performance" preset
+   - Explore different engine characteristics
+
+---
+
+## **FINAL SUMMARY**
+
+This simulation should:
+- ✅ Accurately model SI engine thermodynamics
+- ✅ Provide clear, interactive visualizations
+- ✅ Allow parameter variation to understand effects
+- ✅ Include realistic engine animation
+- ✅ Be user-friendly for engineering students
+- ✅ Export data for further analysis
+- ✅ Look professional and polished
+- ✅ Serve as effective learning tool for automobile engineering lab
+
+**Priority Order:**
+1. Core physics accuracy (MOST IMPORTANT)
+2. Basic P-V and P-θ graphs with interactivity
+3. Parameter controls
+4. Animation
+5. Visual polish and advanced features
+
+---
+
+Would you like me to now create this simulation based on this detailed prompt?

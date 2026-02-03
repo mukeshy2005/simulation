@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PV Diagram Simulation - Four Stroke SI Engine</title>
+    <meta name="description" content="Interactive simulation for SI Engine P-V and P-θ diagrams for B.Tech Mechanical Engineering automobile lab">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>PV Diagram Simulation - Four Stroke SI Engine</h1>
+        <p>Objective: To measure and plot the pressure vs volume diagram as a function of crank position</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Left Sidebar - Controls -->
+        <aside class="panel control-panel">
+            <!-- Engine Parameters -->
+            <h3 class="panel-title">Engine Parameters</h3>
+            
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Bore (B)</span>
+                    <span class="control-value"><span id="boreValue">80</span> mm</span>
+                </div>
+                <input type="range" id="bore" min="50" max="150" value="80" step="1">
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Stroke (S)</span>
+                    <span class="control-value"><span id="strokeValue">110</span> mm</span>
+                </div>
+                <input type="range" id="stroke" min="50" max="200" value="110" step="1">
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Con Rod Length (L)</span>
+                    <span class="control-value"><span id="conRodLengthValue">220</span> mm</span>
+                </div>
+                <input type="range" id="conRodLength" min="150" max="300" value="220" step="5">
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Compression Ratio (r)</span>
+                    <span class="control-value"><span id="compressionRatioValue">8</span>:1</span>
+                </div>
+                <input type="range" id="compressionRatio" min="6" max="12" value="8" step="0.5">
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <!-- Operating Parameters -->
+            <h3 class="panel-title">Operating Parameters</h3>
+            
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Engine RPM</span>
+                    <span class="control-value"><span id="rpmValue">1857</span> rpm</span>
+                </div>
+                <input type="range" id="rpm" min="500" max="4000" value="1857" step="50">
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Load (Torque)</span>
+                    <span class="control-value"><span id="loadValue">11.1</span> Nm</span>
+                </div>
+                <input type="range" id="load" min="0" max="20" value="11.1" step="0.1">
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Ambient Temperature (K)</div>
+                <input type="number" id="ambientTemp" value="298" min="273" max="323" step="1">
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Ambient Pressure (bar)</div>
+                <input type="number" id="ambientPressure" value="1.013" min="0.9" max="1.1" step="0.001">
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <!-- Display Options -->
+            <h3 class="panel-title">Display Options</h3>
+            
+            <div class="control-group">
+                <div class="control-label">Show Multiple Loads</div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item load-color-1">
+                        <input type="checkbox" id="load1">
+                        <label for="load1">Load 1 (2 Nm)</label>
+                    </div>
+                    <div class="checkbox-item load-color-2">
+                        <input type="checkbox" id="load2">
+                        <label for="load2">Load 2 (5 Nm)</label>
+                    </div>
+                    <div class="checkbox-item load-color-3">
+                        <input type="checkbox" id="load3">
+                        <label for="load3">Load 3 (8 Nm)</label>
+                    </div>
+                    <div class="checkbox-item load-color-4">
+                        <input type="checkbox" id="load4" checked>
+                        <label for="load4">Load 4 (11 Nm)</label>
+                    </div>
+                    <div class="checkbox-item load-color-5">
+                        <input type="checkbox" id="load5">
+                        <label for="load5">Load 5 (15 Nm)</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">Cycle Type</div>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" id="cycleActual" name="cycleType" value="actual" checked>
+                        <label for="cycleActual">Actual Cycle</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" id="cycleTheoretical" name="cycleType" value="theoretical">
+                        <label for="cycleTheoretical">Theoretical Cycle</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="btn-group">
+                <button id="generateBtn" class="btn btn-primary">📊 Generate Diagram</button>
+                <button id="resetBtn" class="btn btn-secondary">🔄 Reset to Default</button>
+                <button id="exportCsvBtn" class="btn btn-secondary">📄 Export CSV</button>
+                <button id="exportPngBtn" class="btn btn-secondary">🖼️ Save Graph (PNG)</button>
+            </div>
+        </aside>
+
+        <!-- Center - Graph Display -->
+        <section class="graph-section">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button id="pvTab" class="tab-btn active">P-V Diagram</button>
+                <button id="pthetaTab" class="tab-btn">P-θ Diagram</button>
+            </div>
+            
+            <!-- Charts -->
+            <div id="pvChartContainer" class="chart-container">
+                <canvas id="pvChart"></canvas>
+            </div>
+            <div id="pthetaChartContainer" class="chart-container" style="display: none;">
+                <canvas id="pthetaChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Right Sidebar - Animation & State -->
+        <aside class="panel">
+            <h3 class="panel-title">Engine Animation</h3>
+            
+            <div class="animation-container">
+                <canvas id="engineCanvas" width="260" height="280"></canvas>
+            </div>
+            
+            <div class="control-group">
+                <button id="animationBtn" class="btn btn-animation">▶ Start Animation</button>
+            </div>
+            
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Animation Speed</span>
+                    <span class="control-value"><span id="animationSpeedValue">1</span>x</span>
+                </div>
+                <input type="range" id="animationSpeed" min="0.1" max="5" value="1" step="0.1">
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <h3 class="panel-title">Current State</h3>
+            
+            <div class="state-grid">
+                <div class="state-item">
+                    <span class="state-label">Crank Angle</span>
+                    <span class="state-value" id="stateAngle">0°</span>
+                </div>
+                <div class="state-item">
+                    <span class="state-label">Stroke Phase</span>
+                    <span class="state-value" id="statePhase">Suction</span>
+                </div>
+                <div class="state-item">
+                    <span class="state-label">Volume</span>
+                    <span class="state-value" id="stateVolume">0 cm³</span>
+                </div>
+                <div class="state-item">
+                    <span class="state-label">Pressure</span>
+                    <span class="state-value" id="statePressure">0 bar</span>
+                </div>
+                <div class="state-item">
+                    <span class="state-label">Piston Position</span>
+                    <span class="state-value" id="statePosition">0 mm</span>
+                </div>
+                <div class="state-item">
+                    <span class="state-label">Intake Valve</span>
+                    <span class="state-value" id="stateIntake">CLOSED</span>
+                </div>
+                <div class="state-item">
+                    <span class="state-label">Exhaust Valve</span>
+                    <span class="state-value" id="stateExhaust">CLOSED</span>
+                </div>
+            </div>
+            
+            <div class="section-divider"></div>
+            
+            <h3 class="panel-title">Performance Metrics</h3>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Displacement</div>
+                    <div class="metric-value" id="metricDisplacement">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Comp. Ratio</div>
+                    <div class="metric-value" id="metricCR">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">IMEP</div>
+                    <div class="metric-value" id="metricIMEP">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Ind. Power</div>
+                    <div class="metric-value" id="metricPower">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Efficiency</div>
+                    <div class="metric-value" id="metricEfficiency">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Piston Speed</div>
+                    <div class="metric-value" id="metricPistonSpeed">--</div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/engine-physics.js"></script>
+    <script src="js/graph-generator.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/ui-controls.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
